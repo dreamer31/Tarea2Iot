@@ -1,0 +1,25 @@
+/* 
+ * Copyright (C) 2019 Center for Industry 4.0
+ * All Rights Reserved
+ *
+ * Center_for_Industry_4.0_LICENSE_PLACEHOLDER
+ * Desarrolladores: Enrique Germani, Luciano Radrigan
+ */
+#define STATUS 1
+#define PROTOCOL 2
+#define BMI_SAMPLE 3
+#define BMI_ACC 4
+#define BMI_GYRO 5
+#define BME_SAMPLE 6
+#define DISC_TIME 7
+#define TCP_PORT 8
+#define UDP_PORT 9
+#define HOST_IP 10
+#define SSID 11
+#define PASS 12
+
+int Write_NVS_str(char* datastr, int key);
+int Write_NVS_int32(int32_t data, int key);
+int Write_NVS_int8(int8_t data8, int key);
+
+int Read_NVS(int32_t* data, int8_t* data8, char* datastr, int key);

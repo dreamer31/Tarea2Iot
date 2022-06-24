@@ -1,0 +1,10 @@
+bleak==0.14.3
+dbus-next==0.2.3
+enum-compat==0.0.3
+numpy==1.23.0
+pygatt==4.0.5
+PyQt5==5.15.7
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.11.0
+pyqtgraph==0.12.4
+pyserial==3.5
