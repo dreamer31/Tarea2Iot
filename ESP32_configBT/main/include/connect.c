@@ -7,6 +7,18 @@
    CONDITIONS OF ANY KIND, either express or implied.
  */
 
+/*
+
+
+MAGIA NEGRA
+
+(Tomamos un ejemplo y la hackeamos para que permitiera conectarse 
+dandole las SSID y la pass mediante una función en vez de que 
+estuviera guardado en la configuración de buildeo. En terminos de entender como funciona, eso no.)
+
+*/
+
+
 #include <string.h>
 #include "protocol_examples_common.h"
 #include "sdkconfig.h"

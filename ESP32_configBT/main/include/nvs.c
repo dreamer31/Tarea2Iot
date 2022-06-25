@@ -17,6 +17,17 @@
 #define SSID 11
 #define PASS 12
 
+/*
+
+Aqui es casi lo mismo que fué entregado como material, con un par de variantes 
+]para poder guardar tod0os los tipos de datos pedidos, 
+y funciones adicionales para setear, leer y resettear la flag inicial de forma cómoda.
+
+*/
+
+
+
+
 int write_flash_flag()
 {
     // Initialize NVS

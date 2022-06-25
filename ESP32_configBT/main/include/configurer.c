@@ -2,6 +2,21 @@
 #include "nvs.c"
 #include <stdio.h>
 #include "esp_log.h"
+/*
+Funciones útiles para leer y utilizar la configuración.
+
+-unpackConfig: Dado un stream de bytes con una configuración codificada, lo desempaca en un struct Config
+
+-readConfiguration: Entrega un struct Config con las configuraciones guardadas en NVS.
+
+-writeConfiguration: Dado un struct Config, guarda la configuración en NVS
+
+-ipNumToStr: Dado un int32 que codifique una IP, entrega la conversión a string
+
+*/
+
+
+
 
 Config unpackConfig(char *buffer)
 {
@@ -33,7 +48,6 @@ Config unpackConfig(char *buffer)
     memcpy(c.Pass, &buffer[45], 11);
     return c;
 }
-
 
 
 Config readConfiguration()

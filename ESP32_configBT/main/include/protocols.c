@@ -4,6 +4,26 @@
 #include "esp_mac.h"
 #include "esp_log.h"
 
+/*
+
+Aqui generamos los 5 tipos de protocolos con sus datos.
+Las timestamps en realidad siempre mandamos 0, y por comodidad 
+guardamos la timestampo del tiempo de llegada en el servidor de la raspberry.
+
+
+En general los "mensajes" los creamos copiando a la mala (con memcpy) la memoria de los datos en un char*.
+No es muy elegante pero funciona.
+
+Al final lo único que se usa fuera de este archivo es:
+
+message: dado un protocolo, crea un mensaje (con header y datos) codificado en un array de bytes (char*).
+messageLength: dado un protocolo, entrega el largo del mensaje correspondiente
+
+*/
+
+
+
+
 float floatrand(float min, float max){
     return min + (float)rand()/(float)(RAND_MAX/(max-min));
 }
@@ -87,6 +107,8 @@ unsigned short messageLength(char protocol){
     return 1+10+dataLength(protocol);
 }
 
+
+//Genera el header de un mensaje, con la MAC, el protocolo, status, y el largo del mensaje.
 char* header(char protocol, char status){
 	//ESP_LOGI("debug", "header");
 	char* head = malloc(10);
@@ -101,6 +123,7 @@ char* header(char protocol, char status){
 	free(MACaddrs);
 	return head;
 }
+
 
 char* dataprotocol0(){
     char* msg = malloc(dataLength(0));

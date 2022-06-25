@@ -18,23 +18,16 @@
 #include "protocols.c"
 #include "configurer.c"
 #include "config.h"
-#include "wifi.c"
 #include "sockets.c"
 #include "connect.c"
 
 extern bool is_Aconnected;
 extern bool letsConfig;
 extern char *newConfig;
-// printf("Enabling timer wakeup, %lld\n", wakeup_time_sec);
-// esp_sleep_enable_timer_wakeup(60*1000000);
-// printf("goin to sleep for clk (60 seconds)...");
-// esp_deep_sleep_start();
-// static const char *TAG = "example";
 
-// static void mode_UDP(void *pvParameters);
-// static void mode_BLE_continua(void *pvParameters);
-// static void mode_BLE_discontinua(void *pvParameters);
 
+//Esta función permite darle valores hardcodeados a la ESP32 si uno no quiere repetir
+//el proceso de configuración por bluetooth cada vez.
 void hardcodeConfiguration(char status, char id_protocol, int time)
 {
     Config config; // datos hardcodeados
@@ -53,39 +46,47 @@ void hardcodeConfiguration(char status, char id_protocol, int time)
     writeConfiguration(config);
 }
 
+
+#define RESET_FLAG 1 //1 para el primer flasheo, 0 luego
+
 void app_main(void)
 {
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
-     * Read "Establishing Wi-Fi or Ethernet Connection" section in
-     * examples/protocols/README.md for more information about this function.
-     */
 
     // Wait for bluetooth configuration
-    reset_flash_flag();
-    // hardcodeConfiguration(20, 0, 1);
-    if (read_flash_flag() == 200)
+
+    //Esto debe estar activo en el primer flasheo, y luego debe flashearse nuevamente con esta linea comentada
+    if (RESET_FLAG)
     {
-        printf("FLAG %i: ", read_flash_flag());
-        printf("Using saved CONFIG\n");
-    }
+        reset_flash_flag();}
     else
     {
-        //start in status 0 and wait for config
-        printf("FLAG %i: ", read_flash_flag());
-        printf("HARDCODING CONFIG\n");
-        // hardcodeConfiguration(0, 0, 0);
-        recvBLEConfigClient();
-        write_flash_flag();
+        if (read_flash_flag() == 200)
+        {
+            //En caso de que ya se haya configurado antes, 
+            //pasa diractamente a empezar a mandar datos con la configuración guardada
+            printf("FLAG %i: ", read_flash_flag());
+            printf("Using saved CONFIG\n");
+        }
+        else
+        {
+            //Si la flag no está seteada, espera a ser configurado por BLE
+            printf("FLAG %i: Waiting for BLE configuration", read_flash_flag());
+            recvBLEConfigClient();
+            write_flash_flag();
     }
 
+    //Lee la configuración guardada en NVS y la deja en un struct para facil uso.
     Config config = readConfiguration();
     printConfig(config);
-    printf("ssid: %s, pass: %s\n", config.Ssid, config.Pass);
 
-     ESP_ERROR_CHECK(custom_connect(config.Ssid, config.Pass));
+    //Conecta a la Wifi
+    ESP_ERROR_CHECK(custom_connect(config.Ssid, config.Pass));
     printf("FUNCIONA!\n\n");
+
+    //Inicia el main loop para mandar datos. Detalles en sockets.c
     xTaskCreate(main_client, "tcp_client", 4096, NULL, 5, NULL);
+}
 }
