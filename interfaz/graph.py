@@ -6,6 +6,20 @@ import json
 from datetime import datetime
 from pyqtgraph.Qt import QtCore, QtGui
 
+'''
+Funciones para rescatar los datos de la BDD y prepararlos para ser graficados
+
+-get_info_filter: Fetchea todas las filas de la BDD, pudiendo opcionalmente filtrar por protocolo, status o MAC
+-decodeData: Dado una lista de filas de la BDD, las convierte en diccionario para mas facil acceso a las columnas por nombre
+-filter_by_data_type: Dado un tipo de dato que se quiere graficar, entrega todas las filas que tengan ese tipo entre sus datos.
+-separe_data: Entrega una lista de timestamps y una lista de valores dado un nombre de tipo de dato y una lista filtrada de filas en forma de diccionario
+-prep_data: entrega la tupla de listas (tiempo, valor) necesaria para graficar un tipo de dato dado
+
+La única función que se importa fuera de este archivo es prep_data, que entrega todo listo para meter en un graph.
+'''
+
+
+
 conn = sql.connect("DB.sqlite")
 c = conn.cursor()
 
@@ -21,7 +35,6 @@ def get_info_filter(protocol='', status='', mac=''):
         c = conn.cursor()
         return c.execute(inst, {'mac':mac, 'status':status, 'protocol':protocol}).fetchall()
 
-
 def decodeData(infoList):
     info = []
     for row in infoList:
@@ -34,7 +47,7 @@ def decodeData(infoList):
     return info
 
 def filter_by_data_type(data_type:str):
-    types = {
+    types = {# diccionario con los protocolos que tiene cada tipo de dato
         "Temp":[2, 3, 4, 5],
         "Hum":[2, 3, 4, 5],
         "Pres":[2, 3, 4, 5],

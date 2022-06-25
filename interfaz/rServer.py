@@ -4,7 +4,24 @@ import socket
 from DataParse import parseData, response
 import traceback
 import threading
+'''
+Aqui están definidos los distintos servidores que se encargan de recibir datos y enviar configuraciones.
+Cada cliente es un thread, para poder tener varios a la vez.
 
+Funciones: 
+-SERVER_thread: Facilita crear un servidor dados ciertos parámetros
+-TCP_frag_recv/UDP_frag_recv: Función para recibir datos fragmentados (en trozos de 1000 bytes)
+-updateServer: Función para avisarle a un srevidor que debe empezar a mandar instrucciones de update (cambiar status/protocol en la ESP32)
+-start_server: función que se usa en la interfaz para crear un servidor, dados los parametros dados (status, protocol, puerto, etc)
+
+
+
+Clases:
+-TCP_config_server_thread: Servidor para enviar config por TCP (status 20)
+-TCP_server_thread: Servidor para recibir datos por TCP (status 21, 22)
+-UDP_server_thread: Servidor para recibir datos por UDP (status 23)
+
+'''
 
 def SERVER_thread(sock_type:str, PORT:int, frag:bool=False, config=None):
     TCP = sock_type == "TCP"
@@ -110,6 +127,7 @@ class TCP_server_thread(threading.Thread):
         self.updated = True
         self.resp = response(True, status, protocol)
     def stop(self):
+        # Instrucción de detenre el server. No es inmediata, pero apenas termine un loop se detiene
         self.stopEv.set()
     
     def stopped(self):
@@ -124,7 +142,7 @@ class TCP_server_thread(threading.Thread):
         s.listen(5)
         print(f"Listening on {self.HOST}:{self.PORT}")
         while not self.stopped():
-            try:
+            try:# intentamos conectarnos constantemente
                 conn, addr = s.accept()
             except Exception as e:
                 print(e)
@@ -135,10 +153,10 @@ class TCP_server_thread(threading.Thread):
                 continue
             print(f'Conecta3 ({addr[0]}) desde el puerto {addr[1]}')
             while not self.stopped():
-                try:
+                try:#recibimos datos constantemente
                     print("Waiting for data...")
                     conn.settimeout(5)
-                    if self.frag:
+                    if self.frag:# decidimos entre recibir los datos de manera simple o fragmentada
                         data = TCP_frag_recv(conn)
                     else:
                         data = conn.recv(1024)
@@ -151,14 +169,16 @@ class TCP_server_thread(threading.Thread):
                     print("Lost connection: TimeoutError")
                     break
                 
-                # print(f"Recibido {'|'.join('{:02x}'.format(x) for x in data)}")
+                # En csao de que no haya error, mandamos el OK de vuelta
+                # Si al servidor se le avisó que debe mandar una instrucción de update, el OK tmbien contiene esa instrucción
                 print("Sending Confirmation")
                 conn.send(self.resp)
+
                 if self.updated:
                     print("sent update message")
-                    self.stop()
+                    self.stop()# Una vez mandamos una instrucción de update con éxito, el server se detiene al finalizar el loop pues no necesariamente sirve para recibir la nueva info
                 try:
-                    info = parseData(data)
+                    info = parseData(data)# guardamos los datos en la BDD
                     print("Info:", info.keys())
 
                     
@@ -196,8 +216,8 @@ class UDP_server_thread(threading.Thread):
         s.bind((self.HOST, self.PORT))
         print(f"Listening on {self.HOST}:{self.PORT}")
         while not self.stopped():
-            try:
-                if self.frag:
+            try:#recibimos datos constantemente
+                if self.frag:# decidimos entre recibir los datos de manera simple o fragmentada
                     data, addr = UDP_frag_recv(s)
                 else:
                     data, addr = s.recvfrom(1024)
@@ -210,13 +230,13 @@ class UDP_server_thread(threading.Thread):
                 print(e)
                 continue
             
-            #print(f"Recibido {'|'.join('{:02x}'.format(x) for x in data)} desde {addr}")
             
+            # enviamos OK y posiblemente una instrucción de update
             s.sendto(self.resp, addr)
             if self.updated:
-                self.stop()
+                self.stop()# una vez enviada la instrucci;ón de update cerramos el server al llegar al fin del loop
             try:
-                info = parseData(data)
+                info = parseData(data)#guardamos los datos
                 print("Info:", info.keys())
             except Exception:
                 print(traceback.format_exc())

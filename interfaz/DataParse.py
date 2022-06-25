@@ -2,6 +2,19 @@ from struct import unpack, pack
 import traceback
 import json
 import sqlite3 as sql
+'''
+Estas funciones se encargan de parsear y guardar los datos recibidos.
+Usamos struct para pasar de un array de bytes a una lista de numeros/strings. (https://docs.python.org/3/library/struct.html)
+(La ESP32 manda los bytes en formato little-endian, por lo que los format strings deben empezar con <)
+
+-dataSave: Guarda los datos en la BDD
+-response: genera un OK para mandar de vuelta cuando se recibe un mensaje, con posibilidad de pedir que se cambie el status/protocol
+-protUnpack: desempaca un byte array con los datos de un mensaje (sin el header)
+-headerDict: Transforma el byte array de header (los primeros 10 bytes de cada mensaje) en un diccionario con la info del header
+-dataDict: Transforma el byta array de datos (los bytes luego de los primeros 10) en un diccionario con los datos edl mensaje
+
+'''
+
 
 def dataSave(header, data):
     with sql.connect("DB.sqlite") as con:

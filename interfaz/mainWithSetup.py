@@ -45,6 +45,7 @@ class GUIController:
     
     
     def graph(self):
+        # grafica el tipo de dato seleccionado
         if self.plot is None:
             
             grph = pg.ScatterPlotItem()
@@ -81,6 +82,10 @@ class GUIController:
         
         
     def server_stop(self):
+        # Detiene uno de los threads de server que esté escuchando. 
+        # Puede quedarse pegado al infinito debido al join en algunos casos borde.
+        # Especificamente, un servidor que esté intentando mandar una update pero está 
+        # desconectado, y se le pide que pare, se quedará pegado y pegará la interfaz entera.
         sel = self.ui.servers_active_stop.currentText()
         ser = self.get_server(sel)
         thr = ser["thread"]
@@ -108,6 +113,10 @@ class GUIController:
         self.ui.servers_active_stop.addItems(names)
     
     def start_server(self):
+        # Comienza un servidor nuevo con las opciones (puerto, status, protocolo) indicados en los dropdown inferiores
+        
+        # En el caso de un servidor con status 20 (configuración por TCP)
+        # utiliza los datos que se utilizan para mandar la config por BLE para generar una configuración para mandar por TCP
         port = self.ui.server_port.value()
         for server in self.servers:
             if server["port"] == port:
@@ -124,6 +133,8 @@ class GUIController:
         self.update_server_dropdown()
 
     def server_update_show(self):
+        # al seleccionar un sever abierto apra ser updateado, 
+        # actualiza los valroes de los dropdowns para mostrar los del server seleccionado
         sel = self.ui.servers_active_update.currentText()
         ser = self.get_server(sel)
         self.ui.server_port.setValue(ser["port"])
@@ -133,6 +144,8 @@ class GUIController:
         self.ui.server_protocol.setCurrentIndex(self.ui.server_protocol.findText(protocol))
     
     def server_update_values(self):
+        # toma los valores en los dropdowns y el servidor seleccionado,
+        # y le indica que comienza a mandar mensajes de update a su esp32
         status = int(self.ui.server_status.currentText())
         protocol = int(self.ui.server_protocol.currentText())
         sel = self.ui.servers_active_update.currentText()
@@ -165,6 +178,7 @@ class GUIController:
         return texto
 
     def actualizarMacs(self):
+        # actualiza la lista de dispositivos con bluetooth disponibles
         adrs = findAddresses()
         self.macs = adrs[1]
         self.UUIDs = adrs[2]
@@ -173,6 +187,7 @@ class GUIController:
         #print()
 
     def conectarMac(self):
+        # se conecta mediante BLE a un dispostivo disponible
         indx = self.ui.selec_7.currentIndex()
         self.macindx = indx
         ##pygatt
@@ -251,6 +266,7 @@ class GUIController:
         return ESPconf
     
     def configSetup(self):
+        # envía una configuración indicada por BLE al dispositivo conectado
         ESPconf = self.getConfigParams()
         pack = ESPconf.pack()
         print("El largo del paquete es:" + str(len(pack)))
@@ -291,10 +307,3 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 
 
-
-
-    # // char* Ssid;
-    # memcpy(c.Ssid, &buffer[34], 11);
-    # // char* Pass;
-    # memcpy(c.Pass, &buffer[45], 11);
-    # return c;

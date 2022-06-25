@@ -3,6 +3,13 @@ from uuid import UUID
 from bleak import BleakScanner
 from binascii import hexlify, unhexlify
 
+'''
+
+Funciones para escanear y encontrar los dispositivos Bluetooth disponibles
+
+'''
+
+
 def findAddresses():
     names = []
     macs = []

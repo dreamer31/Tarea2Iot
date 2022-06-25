@@ -2,6 +2,16 @@ import ipaddress
 import socket
 import struct
 
+'''
+Clase que permite crear facilmente una confiruación para la ESP32
+
+-ESPconfig: Clase que guarda los datos de configuracion. Con el metodo pack() convierte la configuración en un array de bytes
+
+El init verifica que la IP tenga forma de IP la guarda como int32, y que tanto el nombre de la red wifi como su password tengan como máximo 10 caracteres ()limite arbitrario).
+tambien verifica que el par protocolo/status sea válido
+
+'''
+
 __configList = [0, 0, 1, 2, 3, 4, 5, 5000, 6000, str(ipaddress.ip_address(
             socket.gethostbyname(socket.gethostname()))), "iotWifi", "iotPass"]
 

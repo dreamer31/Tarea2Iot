@@ -15,3 +15,5 @@ conn = sql.connect("DB.sqlite")
 cur = conn.cursor()
 cur.execute(create)
 conn.close()
+
+# inicializa la BDD
