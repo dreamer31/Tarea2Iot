@@ -2,26 +2,43 @@
 
 A continuación se explicara cada botón, zona y caja de la interfaz.
 ![Primera parte de la interfaz](Interfaz.png)
-    **1. Botón de escaneo de dispositivos**, al apretarlo tras 5 segs va en 3. poner los dispositivos disponibles cercanos.
-    **2. Seleccionar**, al apretarlo se prueba conexión leyendo las caracteristicas del dispositivo seleccionado en 3. ES NECESARIO APRETARLO ANTES DE PODER ENVIAR UNA CONFIG. De momento solo es posible ver en la terminal donde se este ejecutando si es que la conexión fue exitosa.
-    **3. Barra dropdown**, aquí es una lista de los dispositivos BLE disponibles. Comienza vacía.
-    **4. Zona de parametros**, aquí se rellena la configuración como esta descrita en el enunciado de la tarea, es importante rellenarla completamente para poder enviarla o updatear un server. 
-    **5. Zona de Operacióń y Protocolo**, aqui en las barras dropdown seleccionas que modo de operación y protocolo estas mandando junto a la configuración, tal como esta descrito en el enunciado de la tarea (no todos los modos están implementados en el chip ESP32).
-    **6. Boton save config**, al apretarlo envias la configuración escrita al último dispositivo BLE seleccionado.
-    **7. Configuración de Server**, aquí pones la configuración de un server que reciba los datos, el cual puedes iniciar con 9.
-    **8. Selección de Server a Updeater**, aquí puedes seleccionar entre los servers en los distintos puertos y configuraciones que ya hayas abierto.
-    **9. Iniciar Server**, al apretar este botón se inicia un server para recibir los datos enviados por un chip ESP32 con la configuración dada en 7. Se crea como un Thread.
-    **10. Updatear Server**, al apretar el botón reconfigura la esp32 que este conectada al server seleccionado en 8. con toda la configuración que este escrita en 4.
-    **11. Selección server a detener**, aquí puedes seleccionar entre los server de recepción activos en este computador/raspberry, para poder detenerlo con 12.
-    **12. Detener Monitoreo**, al apretar este botón el server seleccionado en 11. es cerrado completamente. Se cierra su Thread.
-    **13. Configuración/Visualización**, cambiar entre esta ventana de configuración y la de visualización. 
+
+* **1. Botón de escaneo de dispositivos**, al apretarlo tras 5 segs va en 3. poner los dispositivos disponibles cercanos.
+    
+* **2. Seleccionar**, al apretarlo se prueba conexión leyendo las caracteristicas del dispositivo seleccionado en 3. ES NECESARIO APRETARLO ANTES DE PODER ENVIAR UNA CONFIG. De momento solo es posible ver en la terminal donde se este ejecutando si es que la conexión fue exitosa.
+    
+* **3. Barra dropdown**, aquí es una lista de los dispositivos BLE disponibles. Comienza vacía.
+    
+* **4. Zona de parametros**, aquí se rellena la configuración como esta descrita en el enunciado de la tarea, es importante rellenarla completamente para poder enviarla o updatear un server. 
+    
+* **5. Zona de Operacióń y Protocolo**, aqui en las barras dropdown seleccionas que modo de operación y protocolo estas mandando junto a la configuración, tal como esta descrito en el enunciado de la tarea (no todos los modos están implementados en el chip ESP32).
+    
+* **6. Boton save config**, al apretarlo envias la configuración escrita al último dispositivo BLE seleccionado.
+    
+* **7. Configuración de Server**, aquí pones la configuración de un server que reciba los datos, el cual puedes iniciar con 9.
+    
+* **8. Selección de Server a Updeater**, aquí puedes seleccionar entre los servers en los distintos puertos y configuraciones que ya hayas abierto.
+    
+* **9. Iniciar Server**, al apretar este botón se inicia un server para recibir los datos enviados por un chip ESP32 con la configuración dada en 7. Se crea como un Thread.
+    
+ * **10. Updatear Server**, al apretar el botón reconfigura la esp32 que este conectada al server seleccionado en 8. con toda la configuración que este escrita en 4.
+    
+ * **11. Selección server a detener**, aquí puedes seleccionar entre los server de recepción activos en este computador/raspberry, para poder detenerlo con 12.
+    
+ * **12. Detener Monitoreo**, al apretar este botón el server seleccionado en 11. es cerrado completamente. Se cierra su Thread.
+    
+ * **13. Configuración/Visualización**, cambiar entre esta ventana de configuración y la de visualización. 
 
 
 ![Segunda parte de la interfaz](interfaz2.png)
-    **1. Variable**, dropdown bar donde seleccionas cual de todas las variables disponibles quieres graficar.
-    **2. Graficar**, al apretar este botón se grafica los datos de la base de datos respecto a la variable seleccionada en 1. vs el tiempo en que fueron guardada. Se grafica TODO lo que haya en la base de datos al respecto.
-    **3. Caja de grafico**, donde se visualiza el gráfico.
-    **4. Configuración/Visualización**, cambiar entre esta ventana de configuración y la de visualización.
+
+ * **1. Variable**, dropdown bar donde seleccionas cual de todas las variables disponibles quieres graficar.
+    
+ * **2. Graficar**, al apretar este botón se grafica los datos de la base de datos respecto a la variable seleccionada en 1. vs el tiempo en que fueron guardada. Se grafica TODO lo que haya en la base de datos al respecto.
+    
+ * **3. Caja de grafico**, donde se visualiza el gráfico.
+    
+ * **4. Configuración/Visualización**, cambiar entre esta ventana de configuración y la de visualización.
 
 ## Modo de uso:
 Si es que DB.sqlite no existe, ya sea porque es la priemra vez que se usa la interfaz, o porque se elimnó (los gráficos no se ven muy bien cuando los datos llegan en momentos muy distintos), hayq ue ejecutar sqlInit.py una vez para crear la base de datos.
